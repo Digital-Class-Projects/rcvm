@@ -6,12 +6,8 @@ export const siteConfig = {
 
 export const navLinks = [
   {
-    href: '#home',
+    href: '/',
     label: 'Home',
-    sublinks: [
-      { href: '/home1', label: 'Home Style 1' },
-      { href: '/home2', label: 'Home Style 2' },
-    ],
   },
   { href: '#couple', label: 'Couple' },
   { href: '#story', label: 'Our Story' },
@@ -20,12 +16,8 @@ export const navLinks = [
   { href: '#gallery', label: 'Gallery' },
   { href: '#rsvp', label: 'RSVP' },
   {
-    href: '#pages',
+    href: '/',
     label: 'Pages',
-    sublinks: [
-      { href: '/page1', label: 'Page 1' },
-      { href: '/page2', label: 'Page 2' },
-    ],
   },
 ];
 
