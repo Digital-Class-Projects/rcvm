@@ -55,7 +55,7 @@ function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (values.loginAs === 'Admin') {
       // Manual validation for admin credentials
-      if (values.email === 'jay1@gmail.com' && values.password === '12345678') {
+      if (values.email === 'rcvvsm@gmail.com' && values.password === '12345678') {
         toast({
           title: 'Admin Login Successful!',
           description: "You'll be redirected to the admin dashboard.",
@@ -160,7 +160,7 @@ function LoginForm() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder={loginAs === 'Admin' ? "admin@example.com" : "you@example.com"}
+                      placeholder={loginAs === 'Admin' ? "rcvvsm@gmail.com" : "you@example.com"}
                       {...field}
                       className="bg-background/80"
                     />
