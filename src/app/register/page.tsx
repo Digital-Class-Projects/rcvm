@@ -41,6 +41,8 @@ const formSchema = z.object({
   dob: z.string().min(1, 'Date of Birth is required.'),
   motherTongue: z.string().min(1, 'Mother Tongue is required.'),
   caste: z.string().min(1, 'Caste is required.'),
+  height: z.string().min(1, 'Height is required.'),
+  weight: z.string().min(1, 'Weight is required.'),
   mobile: z.string().min(10, 'A valid mobile number is required.'),
   email: z.string().email('Please enter a valid email address.'),
   working: z.string().min(1, 'Working status is required.'),
@@ -271,6 +273,21 @@ function RegisterForm() {
                   </FormItem>
                 )} />
 
+                <FormField control={form.control} name="height" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Height</FormLabel>
+                    <FormControl><Input placeholder="Your height in cm" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+            <FormField control={form.control} name="weight" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Weight</FormLabel>
+                    <FormControl><Input placeholder="Your weight in kg" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
                 {/* Mobile */}
                 <FormField control={form.control} name="mobile" render={({ field }) => (
                   <FormItem>
