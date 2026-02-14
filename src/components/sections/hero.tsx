@@ -50,7 +50,7 @@ export default function Hero() {
       </div>
 
       <div className={cn(
-          "absolute bottom-0 right-0 w-[700px] h-[780px] z-20 pointer-events-none opacity-0",
+          "absolute bottom-0 right-0 w-[700px] h-[680px] z-20 pointer-events-none opacity-0",
           isLoaded && "fade-in"
         )}
       >
