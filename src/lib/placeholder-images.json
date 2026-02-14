@@ -1,0 +1,106 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-bg",
+      "description": "A beautiful bride in a white dress holding a bouquet.",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/slider/slide-1.jpg",
+      "imageHint": "bride flowers"
+    },
+    {
+      "id": "story-1",
+      "description": "First image for the 'Our Story' section.",
+      "imageUrl": "https://images.unsplash.com/photo-1665258608444-54f857b2ed8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb3VwbGUlMjBoYXBweXxlbnwwfHx8fDE3NjI0MjYzMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "couple happy"
+    },
+    {
+      "id": "story-2",
+      "description": "Second image for the 'Our Story' section.",
+      "imageUrl": "https://images.unsplash.com/photo-1605041140728-fecfe5b22e16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3VwbGUlMjBlbWJyYWNlfGVufDB8fHx8MTc2MjQwMjIzOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "couple embrace"
+    },
+    {
+      "id": "bridesmaid-1",
+      "description": "Portrait of the first bridesmaid.",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/important-people/img-1.jpg",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "bridesmaid-2",
+      "description": "Portrait of the second bridesmaid.",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/important-people/img-2.jpg",
+      "imageHint": "woman smiling"
+    },
+    {
+      "id": "bridesmaid-3",
+      "description": "Portrait of the third bridesmaid.",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/important-people/img-3.jpg",
+      "imageHint": "woman happy"
+    },
+    {
+      "id": "bridesmaid-4",
+      "description": "Portrait of the fourth bridesmaid.",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/important-people/img-4.jpg",
+      "imageHint": "woman formal"
+    },
+    {
+      "id": "groomsman-1",
+      "description": "Portrait of the first groomsman.",
+      "imageUrl": "https://images.unsplash.com/photo-1607031542107-f6f46b5d54e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjI0MTg2MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "groomsman-2",
+      "description": "Portrait of the second groomsman.",
+      "imageUrl": "https://images.unsplash.com/photo-1534614971-6be99a7a3ffd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bWFuJTIwc21pbGluZ3xlbnwwfHx8fDE3NjIzNjUwMzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man smiling"
+    },
+    {
+      "id": "groomsman-3",
+      "description": "Portrait of the third groomsman.",
+      "imageUrl": "https://images.unsplash.com/photo-1659714962352-434900f95a91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYW4lMjBoYXBweXxlbnwwfHx8fDE3NjIzNTc2MjN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man happy"
+    },
+    {
+      "id": "groomsman-4",
+      "description": "Portrait of the fourth groomsman.",
+      "imageUrl": "https://images.unsplash.com/photo-1714328564923-d4826427c991?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYW4lMjBmb3JtYWx8ZW58MHx8fHwxNzYyMzE3NTQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man formal"
+    },
+    {
+      "id": "gallery-1",
+      "description": "Gallery image 1",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/gallery/img-1.jpg",
+      "imageHint": "couple love"
+    },
+    {
+      "id": "gallery-2",
+      "description": "Gallery image 2",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/gallery/img-2.jpg",
+      "imageHint": "wedding detail"
+    },
+    {
+      "id": "gallery-3",
+      "description": "Gallery image 3",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/gallery/img-3.jpg",
+      "imageHint": "couple sunset"
+    },
+    {
+      "id": "gallery-4",
+      "description": "Gallery image 4",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/gallery/img-4.jpg",
+      "imageHint": "couple laughing"
+    },
+    {
+      "id": "gallery-5",
+      "description": "Gallery image 5",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/gallery/img-5.jpg",
+      "imageHint": "wedding rings"
+    },
+    {
+      "id": "gallery-6",
+      "description": "Gallery image 6",
+      "imageUrl": "https://html.themexriver.com/forever-love/assets/images/gallery/img-6.jpg",
+      "imageHint": "couple dancing"
+    }
+  ]
+}

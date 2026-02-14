@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 348 100% 99%; /* Very Light Pink (Off-white) */
+    --foreground: 336 65% 15%; /* Dark Pinkish Brown */
+ 
+    --card: 348 83% 97%; /* Light Peach */
+    --card-foreground: 336 65% 15%;
+ 
+    --popover: 348 100% 99%;
+    --popover-foreground: 336 65% 15%;
+ 
+    --primary: 340 100% 74%; /* Soft Pink */
+    --primary-foreground: 336 65% 10%;
+ 
+    --secondary: 42 100% 86%; /* Light Gold/Peach */
+    --secondary-foreground: 42 90% 25%;
+ 
+    --muted: 348 33% 91%;
+    --muted-foreground: 348 20% 41%;
+ 
+    --accent: 42 72% 58%; /* Gold Accent */
+    --accent-foreground: 42 90% 15%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 348 33% 88%;
+    --input: 348 33% 93%;
+    --ring: 340 100% 74%;
+ 
+    --radius: 0.8rem;
+  }
+ 
+  .dark {
+    --background: 336 65% 10%;
+    --foreground: 340 10% 95%;
+ 
+    --card: 336 65% 12%;
+    --card-foreground: 340 10% 95%;
+ 
+    --popover: 336 65% 10%;
+    --popover-foreground: 340 10% 95%;
+ 
+    --primary: 340 100% 74%;
+    --primary-foreground: 336 65% 10%;
+ 
+    --secondary: 42 80% 30%;
+    --secondary-foreground: 42 80% 90%;
+ 
+    --muted: 336 40% 20%;
+    --muted-foreground: 340 10% 65%;
+ 
+    --accent: 42 72% 58%;
+    --accent-foreground: 42 90% 15%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+ 
+    --border: 336 40% 25%;
+    --input: 336 40% 30%;
+    --ring: 340 100% 74%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.zoom-in-out {
+  animation: zoom-in-out 10s ease-in-out infinite;
+}
+
+@keyframes zoom-in-out {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.fade-in {
+  animation: fade-in 1.2s ease-out forwards;
+}
+
+.fade-in-delay {
+  animation: fade-in 1.2s ease-out 0.3s forwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.text-pulse {
+  animation: text-pulse 2s ease-in-out infinite;
+}
+
+@keyframes text-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+.soft-glow-pulse {
+  animation: soft-glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes soft-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px hsla(var(--primary), 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px hsla(var(--primary), 0.9);
+  }
+}
+
+.romantic-gradient-shift {
+  background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--secondary)));
+  animation: romantic-gradient-shift 8s ease-in-out infinite alternate;
+}
+
+@keyframes romantic-gradient-shift {
+  0% {
+    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--secondary)));
+  }
+  100% {
+    background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--background)));
+  }
+}
+
+.important-people-section .carousel-item-container {
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    transform: scale(0.85);
+    opacity: 0.6;
+}
+
+.important-people-section .carousel-item.is-active .carousel-item-container {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.important-people-section .info-box {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
