@@ -9,6 +9,7 @@ import {
   Image as ImageIcon,
   Loader2,
   CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 
 import { useFirebase } from '@/firebase/provider';
@@ -25,6 +26,10 @@ import { updateProfile } from 'firebase/auth';
 import { v4 as uuidv4 } from 'uuid';
 import Image from 'next/image';
 
+const MAX_PHOTOS = 5;
+const MIN_FILE_SIZE = 20 * 1024;       // 20 KB
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
+
 export function PhotoUploadStep({
   onBack,
   onContinue,
@@ -40,19 +45,71 @@ export function PhotoUploadStep({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
-  const [lastUploadedUrl, setLastUploadedUrl] = useState<string | null>(null); // ← keeps success state
+  const [lastUploadedUrl, setLastUploadedUrl] = useState<string | null>(null);
+  const [currentPhotoCount, setCurrentPhotoCount] = useState<number>(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Load current photo count when component mounts
+  useEffect(() => {
+    if (!auth?.currentUser || !database) return;
+
+    const userRef = dbRef(database, `users/${auth.currentUser.uid}`);
+    get(userRef).then((snap) => {
+      const data = snap.val();
+      const photos = data?.photos ?? [];
+      setCurrentPhotoCount(photos.length);
+    });
+  }, [auth?.currentUser?.uid, database]);
+
+  // Cleanup object URL
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
     };
   }, [previewUrl]);
 
+  const canUploadMore = currentPhotoCount < MAX_PHOTOS;
+
+  const validateFile = (file: File): boolean => {
+    if (file.size < MIN_FILE_SIZE) {
+      toast({
+        variant: 'destructive',
+        title: 'File too small',
+        description: `Minimum file size is 20 KB. Your file is ${(file.size / 1024).toFixed(1)} KB.`,
+      });
+      return false;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      toast({
+        variant: 'destructive',
+        title: 'File too large',
+        description: `Maximum allowed size is 2 MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)} MB.`,
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (!canUploadMore) {
+      toast({
+        variant: 'destructive',
+        title: 'Photo limit reached',
+        description: `You can upload maximum ${MAX_PHOTOS} photos.`,
+      });
+      return;
+    }
+
+    if (!validateFile(file)) {
+      e.target.value = ''; // clear input
+      return;
+    }
 
     // Clean previous preview
     if (previewUrl) {
@@ -111,6 +168,16 @@ export function PhotoUploadStep({
           const data = snap.val() ?? {};
           const photos: string[] = data.photos ?? [];
 
+          if (photos.length >= MAX_PHOTOS) {
+            toast({
+              variant: 'destructive',
+              title: 'Limit reached',
+              description: `You already have ${MAX_PHOTOS} photos.`,
+            });
+            resetUploadState();
+            return;
+          }
+
           const updatedPhotos = [...photos, downloadURL];
           const isFirstPhoto = !data.photoURL;
 
@@ -127,18 +194,20 @@ export function PhotoUploadStep({
           await update(userRef, updates);
           fetchUserData();
 
+          // Update local count
+          setCurrentPhotoCount(updatedPhotos.length);
+
           toast({
             title: 'Photo uploaded',
-            description: 'Added to your profile successfully.',
+            description: `Added to your profile (${updatedPhotos.length}/${MAX_PHOTOS})`,
           });
 
-          // Keep preview + mark as success
           setLastUploadedUrl(downloadURL);
           setUploadStatus('success');
           setIsUploading(false);
 
-          // Optional: auto continue after success
-          // onContinue();
+          // Optional: clear preview after few seconds or keep it
+          // setTimeout(() => setPreviewUrl(null), 4000);
 
         } catch (err: any) {
           toast({
@@ -155,11 +224,11 @@ export function PhotoUploadStep({
 
   const resetUploadState = () => {
     setIsUploading(false);
-    // Do NOT clear previewUrl here → we want it to stay after success
+    // Keep preview if success → user can see what was just uploaded
   };
 
   const handleNewUploadClick = () => {
-    if (!isUploading) {
+    if (!isUploading && canUploadMore) {
       fileInputRef.current?.click();
     }
   };
@@ -167,21 +236,23 @@ export function PhotoUploadStep({
   return (
     <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg max-w-lg mx-auto">
       {/* Header */}
-      <div className="flex items-center mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="mr-3"
-          onClick={onBack}
-          disabled={isUploading}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div>
-          <h2 className="text-2xl font-bold">Add a Profile Photo</h2>
-          <p className="text-muted-foreground text-sm mt-1">
-            Show everyone your best side!
-          </p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="mr-3"
+            onClick={onBack}
+            disabled={isUploading}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h2 className="text-2xl font-bold">Add Profile Photos</h2>
+            <p className="text-muted-foreground text-sm mt-1">
+              {currentPhotoCount}/{MAX_PHOTOS} photos uploaded
+            </p>
+          </div>
         </div>
       </div>
 
@@ -191,18 +262,25 @@ export function PhotoUploadStep({
         accept="image/jpeg,image/png,image/webp"
         className="hidden"
         onChange={handleFileChange}
-        disabled={isUploading}
+        disabled={isUploading || !canUploadMore}
       />
 
       {/* Preview / Upload area */}
       <div
         className={`
-          border-2 rounded-xl mb-6 overflow-hidden transition-all
+          border-2 rounded-xl mb-6 overflow-hidden transition-all relative
           ${uploadStatus === 'success' ? 'border-green-400 shadow-md' : ''}
-          ${uploadStatus === 'uploading' ? 'border-primary/40 bg-primary/5' : 'border-dashed border-gray-300 hover:border-primary cursor-pointer'}
+          ${uploadStatus === 'uploading' ? 'border-primary/40 bg-primary/5' : ''}
+          ${!canUploadMore && uploadStatus !== 'uploading' 
+            ? 'border-gray-200 bg-gray-50 opacity-70 cursor-not-allowed' 
+            : 'border-dashed border-gray-300 hover:border-primary cursor-pointer'}
           ${uploadStatus === 'error' ? 'border-red-400' : ''}
         `}
-        onClick={uploadStatus !== 'uploading' ? handleNewUploadClick : undefined}
+        onClick={
+          !isUploading && canUploadMore && uploadStatus !== 'uploading'
+            ? handleNewUploadClick
+            : undefined
+        }
       >
         {previewUrl ? (
           <div className="relative">
@@ -246,20 +324,37 @@ export function PhotoUploadStep({
           </div>
         ) : (
           <div className="py-16 text-center">
-            <ImageIcon className="mx-auto h-14 w-14 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium mb-2">Click to select photo</h3>
-            <p className="text-sm text-muted-foreground">
-              JPG, PNG, WebP — max 5 MB
-            </p>
+            {canUploadMore ? (
+              <>
+                <ImageIcon className="mx-auto h-14 w-14 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium mb-2">
+                  {currentPhotoCount === 0 ? 'Click to select your first photo' : 'Add another photo'}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  JPG, PNG, WebP — 20 KB to 2 MB
+                </p>
+              </>
+            ) : (
+              <>
+                <AlertCircle className="mx-auto h-12 w-12 text-amber-500 mb-4" />
+                <h3 className="text-lg font-medium mb-2 text-amber-800">
+                  Maximum limit reached
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  You have uploaded {MAX_PHOTOS} photos already
+                </p>
+              </>
+            )}
           </div>
         )}
       </div>
 
       {/* Guidelines */}
       <div className="mb-8 text-sm text-gray-600">
-        <h4 className="font-medium text-gray-800 mb-2">Photo guidelines:</h4>
+        <h4 className="font-medium text-gray-800 mb-2">Photo rules:</h4>
         <ul className="list-disc pl-5 space-y-1">
-          <li>Less than 5 MB</li>
+          <li>Maximum {MAX_PHOTOS} photos allowed</li>
+          <li>Each photo: 20 KB – 2 MB</li>
           <li>Clear, recent photo of yourself</li>
           <li>No group photos for profile picture</li>
         </ul>
@@ -277,7 +372,7 @@ export function PhotoUploadStep({
 
         <Button
           onClick={onContinue}
-          disabled={isUploading || uploadStatus !== 'success'}
+          disabled={isUploading || currentPhotoCount === 0}
         >
           Continue
         </Button>

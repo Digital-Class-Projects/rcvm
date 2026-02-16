@@ -15,6 +15,7 @@ import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { differenceInDays, format } from 'date-fns';
+import Image from 'next/image';
 
 function DashboardSidebar() {
   const { hasMembership } = useProfile();
@@ -30,8 +31,8 @@ function DashboardSidebar() {
   return (
     <aside className="w-64 bg-card p-6 hidden lg:flex flex-col justify-between">
       <div>
-        <Link href="/dashboard" className="font-serif text-3xl font-bold text-primary mb-10 block">
-          Eternal Union
+        <Link href="/dashboard" className="mb-10 flex justify-center">
+          <Image src="https://ik.imagekit.io/rgazxzsxr/WhatsApp_Image_2025-11-17_at_14.09.46_86744fba-removebg-preview.png" alt="Eternal Union Logo" width={100} height={70} className="object-contain" />
         </Link>
         <nav className="space-y-2">
           {navItems.map((item) => (
@@ -40,7 +41,7 @@ function DashboardSidebar() {
               href={item.href}
               className="flex items-center gap-3 px-4 py-2 text-muted-foreground font-medium rounded-lg hover:bg-primary/10 hover:text-primary transition-colors"
             >
-              <item.icon className="w-5 h-5" />
+              <item.icon className="w-4 h-4" />
               <span>{item.label}</span>
             </Link>
           ))}
@@ -67,8 +68,7 @@ function DashboardHeader() {
     };
     
     const userName = auth?.currentUser?.displayName || "User";
-    const userGender = userData?.basicInfo?.gender || "male";
-    const greeting = userGender === 'male' ? `Hey Bro 👋` : `Hey Sis 👋`;
+    const greeting = `Welcome, ${userName} 👋`;
 
     const planName = userData?.membership?.plan;
     const expiryDate = userData?.membership?.expiryDate;

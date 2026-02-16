@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { ChevronDown, LayoutGrid, LogOut, Menu, User, UserCheck, UserX, XCircle, Settings, Search } from 'lucide-react';
+import { ChevronDown, LayoutGrid, LogOut, Menu, User, UserCheck, UserX, XCircle, Settings, Search, Banknote } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -17,6 +17,7 @@ function AdminSidebar() {
     { icon: LayoutGrid, label: 'Dashboard', href: '/admin/dashboard' },
     { icon: User, label: 'Registered Users', href: '/admin/users' },
     { icon: UserCheck, label: 'Active Plan Users', href: '/admin/active-plans' },
+    { icon: Banknote, label: 'Pending Payments', href: '/admin/payments' },
     { icon: UserX, label: 'Blocked IDs', href: '/admin/blocked' },
     { icon: XCircle, label: 'Cancelled Plans', href: '/admin/cancelled' },
     { icon: Settings, label: 'Settings', href: '/admin/settings' },
@@ -61,6 +62,16 @@ function AdminHeader() {
     const adminName = "Admin";
     const greeting = `Welcome Admin 👋`;
 
+    const navItems = [
+        { icon: LayoutGrid, label: 'Dashboard', href: '/admin/dashboard' },
+        { icon: User, label: 'Registered Users', href: '/admin/users' },
+        { icon: UserCheck, label: 'Active Plan Users', href: '/admin/active-plans' },
+        { icon: Banknote, label: 'Pending Payments', href: '/admin/payments' },
+        { icon: UserX, label: 'Blocked IDs', href: '/admin/blocked' },
+        { icon: XCircle, label: 'Cancelled Plans', href: '/admin/cancelled' },
+        { icon: Settings, label: 'Settings', href: '/admin/settings' },
+    ];
+
     return (
         <header className="bg-background/80 backdrop-blur-sm border-b">
             <div className="container mx-auto px-6 h-20 flex justify-between items-center">
@@ -76,14 +87,7 @@ function AdminHeader() {
                                 Admin Panel
                             </Link>
                              <nav className="space-y-2">
-                                {[
-                                    { icon: LayoutGrid, label: 'Dashboard', href: '/admin/dashboard' },
-                                    { icon: User, label: 'Registered Users', href: '/admin/users' },
-                                    { icon: UserCheck, label: 'Active Plan Users', href: '/admin/active-plans' },
-                                    { icon: UserX, label: 'Blocked IDs', href: '/admin/blocked' },
-                                    { icon: XCircle, label: 'Cancelled Plans', href: '/admin/cancelled' },
-                                    { icon: Settings, label: 'Settings', href: '/admin/settings' },
-                                ].map((item) => (
+                                {navItems.map((item) => (
                                     <Link
                                     key={item.label}
                                     href={item.href}

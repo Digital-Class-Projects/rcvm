@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,11 +8,20 @@ import { ref, onValue } from 'firebase/database';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Heart, MessageCircle, User, Briefcase, Home, Star, Camera } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Heart } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+
+function DetailItem({ label, value }: { label: string, value?: string | null }) {
+    if (!value) return null;
+    return (
+        <div><span className="font-semibold">{label}:</span> {value}</div>
+    );
+}
 
 function ProfileDetails({ profile }: { profile: any }) {
+    const lifestyleHabits = profile.familyInfo?.lifestyleHabits || [];
     return (
         <div className="space-y-6">
             <Card>
@@ -22,37 +32,79 @@ function ProfileDetails({ profile }: { profile: any }) {
             </Card>
 
              <Card>
+                <CardHeader><CardTitle>Basic Information</CardTitle></CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <DetailItem label="Gender" value={profile.basicInfo?.gender} />
+                    <DetailItem label="Date of Birth" value={profile.basicInfo?.dob} />
+                    <DetailItem label="Age" value={profile.basicInfo?.age} />
+                    <DetailItem label="Religion" value={profile.basicInfo?.religion} />
+                    <DetailItem label="Mother Tongue" value={profile.basicInfo?.motherTongue} />
+                    <DetailItem label="Caste" value={profile.basicInfo?.caste} />
+                </CardContent>
+            </Card>
+
+             <Card>
                 <CardHeader><CardTitle>Personal Information</CardTitle></CardHeader>
-                <CardContent className="grid grid-cols-2 gap-4">
-                    <div><span className="font-semibold">Born:</span> {profile.personalInfo?.dob}</div>
-                    <div><span className="font-semibold">Birth Place:</span> {profile.personalInfo?.birthPlace}</div>
-                    <div><span className="font-semibold">Nationality:</span> {profile.personalInfo?.nationality}</div>
-                    <div><span className="font-semibold">Marital Status:</span> {profile.personalInfo?.maritalStatus}</div>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <DetailItem label="Marital Status" value={profile.personalInfo?.maritalStatus} />
+                    <DetailItem label="Birth Place" value={profile.personalInfo?.birthPlace} />
+                    <DetailItem label="Nationality" value={profile.personalInfo?.nationality} />
+                    <DetailItem label="Blood Group" value={profile.personalInfo?.bloodGroup} />
+                    <DetailItem label="Contact Number" value={profile.personalInfo?.contactNumber} />
+                    <DetailItem label="Current Address" value={profile.personalInfo?.currentAddress} />
+                    <DetailItem label="Permanent Address" value={profile.personalInfo?.permanentAddress} />
+                    <DetailItem label="Hobbies" value={profile.personalInfo?.hobbies} />
                 </CardContent>
             </Card>
             
             <Card>
                 <CardHeader><CardTitle>Career Details</CardTitle></CardHeader>
-                <CardContent className="grid grid-cols-2 gap-4">
-                    <div><span className="font-semibold">Occupation:</span> {profile.careerInfo?.occupation}</div>
-                    <div><span className="font-semibold">Income:</span> {profile.careerInfo?.annualIncome}</div>
-                    <div><span className="font-semibold">Employed In:</span> {profile.careerInfo?.employedIn}</div>
-                    <div><span className="font-semibold">Highest Qualification:</span> {profile.careerInfo?.highestQualification}</div>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <DetailItem label="Highest Qualification" value={profile.careerInfo?.highestQualification} />
+                    <DetailItem label="Additional Qualification" value={profile.careerInfo?.additionalQualification} />
+                    <DetailItem label="University" value={profile.careerInfo?.university} />
+                    <DetailItem label="Occupation" value={profile.careerInfo?.occupation} />
+                    <DetailItem label="Employed In" value={profile.careerInfo?.employedIn} />
+                    <DetailItem label="Company Name" value={profile.careerInfo?.companyName} />
+                    <DetailItem label="Designation" value={profile.careerInfo?.designation} />
+                    <DetailItem label="Work Location" value={profile.careerInfo?.workLocation} />
+                    <DetailItem label="Annual Income" value={profile.careerInfo?.annualIncome} />
+                    <DetailItem label="Skills" value={profile.careerInfo?.skills} />
+                    <DetailItem label="Manglik" value={profile.careerInfo?.manglik} />
                 </CardContent>
             </Card>
 
              <Card>
                 <CardHeader><CardTitle>Family Details</CardTitle></CardHeader>
-                <CardContent className="grid grid-cols-2 gap-4">
-                    <div><span className="font-semibold">Family Type:</span> {profile.familyInfo?.familyType}</div>
-                    <div><span className="font-semibold">Family Status:</span> {profile.familyInfo?.familyStatus}</div>
-                    <div><span className="font-semibold">Father's Occupation:</span> {profile.familyInfo?.fatherOccupation}</div>
-                    <div><span className="font-semibold">Mother's Occupation:</span> {profile.familyInfo?.motherOccupation}</div>
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <DetailItem label="Family Type" value={profile.familyInfo?.familyType} />
+                        <DetailItem label="Family Status" value={profile.familyInfo?.familyStatus} />
+                        <DetailItem label="Family Income" value={profile.familyInfo?.familyIncome} />
+                        <DetailItem label="Family Values" value={profile.familyInfo?.familyValues} />
+                        <DetailItem label="Father's Occupation" value={profile.familyInfo?.fatherOccupation} />
+                        <DetailItem label="Mother's Occupation" value={profile.familyInfo?.motherOccupation} />
+                        <DetailItem label="Brothers" value={profile.familyInfo?.brothers} />
+                        <DetailItem label="Sisters" value={profile.familyInfo?.sisters} />
+                        <DetailItem label="Married Brothers" value={profile.familyInfo?.marriedBrothers} />
+                        <DetailItem label="Married Sisters" value={profile.familyInfo?.marriedSisters} />
+                        <DetailItem label="Native Place" value={profile.familyInfo?.nativePlace} />
+                    </div>
+                    {lifestyleHabits.length > 0 && (
+                        <div>
+                            <span className="font-semibold">Lifestyle Habits:</span>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {lifestyleHabits.map((habit: string) => <Badge key={habit} variant="secondary">{habit.charAt(0).toUpperCase() + habit.slice(1)}</Badge>)}
+                            </div>
+                        </div>
+                    )}
+                    {profile.familyInfo?.aboutFamily && <p className="mt-4"><span className="font-semibold">About Family:</span> {profile.familyInfo.aboutFamily}</p>}
                 </CardContent>
             </Card>
         </div>
     )
 }
+
 
 function PhotoGallery({ photos }: { photos: string[] }) {
     if (!photos || photos.length === 0) {
@@ -71,9 +123,17 @@ function PhotoGallery({ photos }: { photos: string[] }) {
             <CardHeader><CardTitle>Photo Gallery</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {photos.map((photo, index) => (
-                    <div key={index} className="relative aspect-square w-full overflow-hidden rounded-lg">
-                        <Image src={photo} alt={`Profile photo ${index + 1}`} fill className="object-cover" />
-                    </div>
+                    <Dialog key={index}>
+                        <DialogTrigger asChild>
+                            <div className="relative aspect-square w-full overflow-hidden rounded-lg cursor-pointer group">
+                                <Image src={photo} alt={`Profile photo ${index + 1}`} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
+                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-3xl p-0 border-0 bg-transparent shadow-none">
+                            <Image src={photo} alt={`Profile photo ${index + 1}`} width={800} height={1000} className="w-full h-auto rounded-lg object-contain" />
+                        </DialogContent>
+                    </Dialog>
                 ))}
             </CardContent>
         </Card>
@@ -128,7 +188,6 @@ export default function ProfilePage() {
                    </div>
                    <div className="sm:ml-auto mt-4 sm:mt-0 flex gap-2">
                         <Button size="lg"><Heart className="mr-2 h-5 w-5"/> Send Interest</Button>
-                        <Button size="lg" variant="outline"><MessageCircle className="mr-2 h-5 w-5"/> Message</Button>
                    </div>
                 </div>
             </Card>
@@ -142,7 +201,7 @@ export default function ProfilePage() {
                    <ProfileDetails profile={profile} />
                 </TabsContent>
                 <TabsContent value="gallery" className="mt-6">
-                    <PhotoGallery photos={profile.photos || []} />
+                    <PhotoGallery photos={profile.photos || [profile.photoURL].filter(Boolean)} />
                 </TabsContent>
             </Tabs>
 

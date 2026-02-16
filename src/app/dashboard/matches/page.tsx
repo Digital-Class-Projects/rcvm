@@ -4,20 +4,19 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useFirebase } from '@/firebase/provider';
 import { useProfile } from '@/components/profile-provider';
-import { ref, onValue, set, get, serverTimestamp, query, orderByChild, equalTo, update } from 'firebase/database';
-import { Card, CardContent } from '@/components/ui/card';
+import { ref, onValue, set, get, serverTimestamp } from 'firebase/database';
+import { Card } from '@/components/ui/card';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Heart, MessageCircle, Star, Filter } from 'lucide-react';
+import { Heart, Star, Filter } from 'lucide-react';
 import Link from 'next/link';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -29,9 +28,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import { useRouter } from 'next/navigation';
-import { differenceInHours } from 'date-fns';
 
 const FilterSection = ({ filters, setFilters, cities, religions, occupations }: any) => {
   const handleFilterChange = (key: string, value: string) => {
@@ -113,7 +111,6 @@ function MatchingProfiles() {
     const { userData: currentUserData } = useProfile();
     const [allUsers, setAllUsers] = useState<any[]>([]);
     const [interests, setInterests] = useState<{[key: string]: any}>({});
-    const [chatRequests, setChatRequests] = useState<{[key: string]: any}>({});
     const [filters, setFilters] = useState({ city: '', religion: '', manglik: '', occupation: '' });
     const { toast } = useToast();
     const router = useRouter();
@@ -122,7 +119,6 @@ function MatchingProfiles() {
         if (!database || !auth?.currentUser) return;
         const usersRef = ref(database, 'users');
         const interestsRef = ref(database, 'interests');
-        const chatRequestsRef = ref(database, 'chatRequests');
 
         const unsubscribeUsers = onValue(usersRef, (snapshot) => {
             const usersData = snapshot.val();
@@ -140,15 +136,10 @@ function MatchingProfiles() {
         const unsubscribeInterests = onValue(interestsRef, (snapshot) => {
             setInterests(snapshot.val() || {});
         });
-        
-        const unsubscribeChatRequests = onValue(chatRequestsRef, (snapshot) => {
-            setChatRequests(snapshot.val() || {});
-        });
 
         return () => {
             unsubscribeUsers();
             unsubscribeInterests();
-            unsubscribeChatRequests();
         };
     }, [database, auth?.currentUser]);
 
@@ -234,92 +225,11 @@ function MatchingProfiles() {
             });
         }
     };
-
-    const handleSendChatRequest = async (receiverProfile: any) => {
-        if (!auth?.currentUser || !database || !currentUserData) {
-             toast({
-                variant: 'destructive',
-                title: 'Error',
-                description: 'You must be logged in to send a chat request.',
-            });
-            return;
-        }
-
-        const now = new Date();
-        const lastSent = currentUserData.lastChatRequestSentAt ? new Date(currentUserData.lastChatRequestSentAt) : null;
-        
-        if (lastSent && differenceInHours(now, lastSent) < 24) {
-             toast({
-                variant: 'destructive',
-                title: 'Request Limit Reached',
-                description: 'You can only send one chat request per day.',
-            });
-            return;
-        }
-
-        const senderId = auth.currentUser.uid;
-        const receiverId = receiverProfile.uid;
-        const requestId1 = `${senderId}_${receiverId}`;
-        const requestId2 = `${receiverId}_${senderId}`;
-
-        try {
-            const requestRef1 = ref(database, `chatRequests/${requestId1}`);
-            const requestRef2 = ref(database, `chatRequests/${requestId2}`);
-            
-            const [snapshot1, snapshot2] = await Promise.all([get(requestRef1), get(requestRef2)]);
-
-            if (snapshot1.exists() || snapshot2.exists()) {
-                toast({
-                    title: 'Request Already Exists',
-                    description: `A chat request with ${receiverProfile.name} is already pending or accepted.`,
-                });
-                return;
-            }
-
-            const requestData = {
-                senderId: senderId,
-                senderName: currentUserData.name,
-                senderPhotoURL: currentUserData.photoURL || `https://picsum.photos/seed/${senderId}/200/200`,
-                receiverId: receiverId,
-                receiverName: receiverProfile.name,
-                receiverPhotoURL: receiverProfile.photoURL || `https://picsum.photos/seed/${receiverId}/200/200`,
-                status: 'pending',
-                createdAt: serverTimestamp(),
-            };
-            
-            await set(requestRef1, requestData);
-
-            // Update the user's last sent time
-            const userRef = ref(database, `users/${senderId}`);
-            await update(userRef, {
-                lastChatRequestSentAt: now.toISOString(),
-            });
-
-            toast({
-                title: 'Chat Request Sent!',
-                description: `Your request has been sent to ${receiverProfile.name}.`,
-            });
-        } catch (error: any) {
-            console.error("Failed to send chat request:", error);
-            toast({
-                variant: 'destructive',
-                title: 'Error',
-                description: error.message || 'Failed to send chat request. Please try again.',
-            });
-        }
-    };
     
     const hasSentInterest = (receiverId: string) => {
         if (!auth?.currentUser) return false;
         const interestId = `${auth.currentUser.uid}_${receiverId}`;
         return !!interests[interestId];
-    }
-
-    const hasSentChatRequest = (receiverId: string) => {
-        if (!auth?.currentUser) return false;
-        const requestId1 = `${auth.currentUser.uid}_${receiverId}`;
-        const requestId2 = `${receiverId}_${auth.currentUser.uid}`;
-        return !!chatRequests[requestId1] || !!chatRequests[requestId2];
     }
 
     return (
@@ -365,26 +275,6 @@ function MatchingProfiles() {
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
-
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button variant="ghost" size="icon" className='rounded-full text-muted-foreground hover:text-primary' disabled={hasSentChatRequest(profile.uid)}>
-                                            <MessageCircle className="w-6 h-6" />
-                                        </Button>
-                                    </AlertDialogTrigger>
-                                     <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                        <AlertDialogTitle>Send Chat Request</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            Are you sure you want to send a chat request to {profile.name}? They will need to accept before you can message.
-                                        </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleSendChatRequest(profile)}>Send Request</AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
                             </div>
                         </Card>
                     ))}
@@ -416,7 +306,3 @@ export default function MatchesPage() {
 
     return <MatchingProfiles />;
 }
-
-    
-
-    
