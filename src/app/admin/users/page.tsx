@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useFirebase } from '@/firebase/provider';
 import { ref, onValue, update, remove } from 'firebase/database';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -119,7 +120,9 @@ export default function RegisteredUsersPage() {
                                 <TableCell>{user.membership?.plan || 'Free'}</TableCell>
                                 <TableCell>{getStatusBadge(user.status)}</TableCell>
                                 <TableCell className="space-x-2">
-                                    <Button variant="outline" size="sm">View</Button>
+                                    <Button asChild variant="outline" size="sm">
+                                        <Link href={`/dashboard/profile/${user.uid}`} target="_blank">View</Link>
+                                    </Button>
                                     <Button variant="outline" size="sm" onClick={() => handleBlock(user.uid)}>Block</Button>
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
