@@ -23,7 +23,7 @@ type ProfileContextType = {
 
 const initialSteps: Step[] = [
   { id: '1', title: 'Basic Information', description: 'Name, DOB, Gender, etc.', completed: false },
-  { id: '2', title: 'Personal Information', description: 'Contact, ID, Address, etc.', completed: false },
+  { id: '2', title: 'Personal Information', description: ' ID, Address, etc.', completed: false },
   { id: '3', title: 'Career Details', description: 'Occupation, Income, etc.', completed: false },
   { id: '4', title: 'Family & Lifestyle', description: 'Family type, Occupations, etc.', completed: false },
   { id: '5', title: 'Upload Photos', description: 'Add photos to your profile.', completed: false },

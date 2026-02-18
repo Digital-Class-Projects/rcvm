@@ -50,7 +50,7 @@ function ProfileDetails({ profile }: { profile: any }) {
                     <DetailItem label="Birth Place" value={profile.personalInfo?.birthPlace} />
                     <DetailItem label="Nationality" value={profile.personalInfo?.nationality} />
                     <DetailItem label="Blood Group" value={profile.personalInfo?.bloodGroup} />
-                    <DetailItem label="Contact Number" value={profile.personalInfo?.contactNumber} />
+                    
                     <DetailItem label="Current Address" value={profile.personalInfo?.currentAddress} />
                     <DetailItem label="Permanent Address" value={profile.personalInfo?.permanentAddress} />
                     <DetailItem label="Hobbies" value={profile.personalInfo?.hobbies} />
@@ -170,11 +170,18 @@ export default function ProfilePage() {
         return <div>Profile not found.</div>;
     }
 
+    const galleryPhotos = [...(profile.photos || [])];
+    if (profile.photoURL && !galleryPhotos.includes(profile.photoURL)) {
+        galleryPhotos.unshift(profile.photoURL);
+    }
+    const uniquePhotos = [...new Set(galleryPhotos)];
+
+
     return (
         <div className="max-w-6xl mx-auto">
             <Card className="mb-8 overflow-hidden">
                 <div className="relative h-48 bg-gray-200">
-                    <Image src={profile.photos?.[1] || `https://picsum.photos/seed/${uid}-banner/1200/200`} alt="Profile banner" fill className="object-cover"/>
+                    <Image src={uniquePhotos[1] || uniquePhotos[0] || `https://picsum.photos/seed/${uid}-banner/1200/200`} alt="Profile banner" fill className="object-cover"/>
                      <div className="absolute inset-0 bg-black/30" />
                 </div>
                 <div className="p-6 sm:flex sm:items-end sm:gap-6 -mt-20">
@@ -201,7 +208,7 @@ export default function ProfilePage() {
                    <ProfileDetails profile={profile} />
                 </TabsContent>
                 <TabsContent value="gallery" className="mt-6">
-                    <PhotoGallery photos={profile.photos || [profile.photoURL].filter(Boolean)} />
+                    <PhotoGallery photos={uniquePhotos} />
                 </TabsContent>
             </Tabs>
 
